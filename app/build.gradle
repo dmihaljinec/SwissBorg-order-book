@@ -1,0 +1,86 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-android-extensions"
+    id "kotlin-kapt"
+    id "dagger.hilt.android.plugin"
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.swissborg.orderbook"
+        minSdkVersion 24
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        dataBinding = true
+    }
+}
+
+configurations.all {
+    // androidx.test includes junit 4.12 so this will force that entire project uses same junit version
+    resolutionStrategy.force "junit:junit:${versions.junit}"
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutinesAndroidVersion}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutinesAndroidVersion}"
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
+    // Android UI and appcompat
+    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
+    implementation "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
+    implementation "androidx.recyclerview:recyclerview:${versions.recyclerView}"
+    implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
+    // OkHttp
+    implementation("com.squareup.okhttp3:okhttp:${versions.okhttp}")
+    // Gson
+    implementation "com.google.code.gson:gson:${versions.gson}"
+    // Stateless4j state machine
+    implementation "com.github.stateless4j:stateless4j:${versions.stateless4j}"
+    // Timber loggin library
+    implementation "com.jakewharton.timber:timber:${versions.timber}"
+    // Hilt (Dagger dependency injection)
+    implementation "com.google.dagger:hilt-android:${versions.hiltDagger}"
+    kapt "com.google.dagger:hilt-compiler:${versions.hiltDagger}"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:${versions.hilt}"
+    kapt "androidx.hilt:hilt-compiler:${versions.hilt}"
+    // Unit test
+    testImplementation "junit:junit:${versions.junit}"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutinesAndroidVersion}"
+    testImplementation "io.mockk:mockk:${versions.mockk}"
+    // Android Instrumented test
+    androidTestImplementation "androidx.test:core:${versions.androidTest}"
+    androidTestImplementation "androidx.test:runner:${versions.androidTest}"
+    // Leak canary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${versions.leakCanary}"
+}
