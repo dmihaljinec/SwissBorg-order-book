@@ -11,27 +11,36 @@ import kotlinx.coroutines.flow.transform
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class TickerChannel(
+class OrderBooksChannel(
     currencyPair: OrderBookRepository.CurrencyPair,
     connection: ChannelConnection,
     gson: Gson
 ) : Channel(
-    Api.CHANNEL_TICKER,
+    Api.CHANNEL_ORDER_BOOK,
     currencyPair.toApiString(),
     connection,
     gson,
-    TickerChannel::class.java.simpleName
+    OrderBooksChannel::class.java.simpleName
 ) {
-    suspend fun getTicker(): Flow<Api.Ticker> {
+    suspend fun getOrderBooks(): Flow<List<Api.OrderBook>> {
+        val orderBook = mutableMapOf<Double, Api.OrderBook>()
         return messages()
             .transform { message ->
                 if (message.isEvent(gson)) processEvent(message)
-                else message.toTicker(gson)?.run { emit(this) }
+                else {
+                    val list = gson.fromJson(message, List::class.java)
+                    list?.forEach { item ->
+                        (item as? Api.OrderBook)?.run {
+                            orderBook[this.price] = this
+                        }
+                    }
+                    emit(orderBook.values.toList().sortedBy { it.price })
+                }
             }
             .flowOn(Dispatchers.IO)
     }
 
     override fun subscribe() {
-        connection.send(gson.toJson(Subscribe(channel = name, pair = currencyPair), Subscribe::class.java))
+        connection.send(gson.toJson(SubscribeBook(channel = name, pair = currencyPair), SubscribeBook::class.java))
     }
 }

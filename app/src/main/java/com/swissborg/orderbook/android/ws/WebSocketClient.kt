@@ -2,6 +2,8 @@ package com.swissborg.orderbook.android.ws
 
 import android.net.ConnectivityManager
 import android.net.Network
+import android.os.Handler
+import android.os.Looper
 import com.github.oxo42.stateless4j.StateMachine
 import com.github.oxo42.stateless4j.StateMachineConfig
 import com.github.oxo42.stateless4j.delegates.Action
@@ -18,10 +20,11 @@ import okhttp3.*
 import okio.ByteString
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.pow
 
 @ExperimentalCoroutinesApi
 class WebSocketClient @Inject constructor(
-    private val connectivityManager: ConnectivityManager,
+    connectivityManager: ConnectivityManager,
     private val httpClient: OkHttpClient,
     private val url: String
 ) : WebSocketListener() {
@@ -35,18 +38,26 @@ class WebSocketClient @Inject constructor(
     @FlowPreview
     val messages: Flow<String>
         get() = messageChannel.asFlow()
-
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
+            isNetworkAvailable = true
             stateMachine.fire(Trigger.NETWORK_AVAILABLE)
             Timber.d("onAvailable")
         }
 
         override fun onLost(network: Network) {
+            isNetworkAvailable = false
             stateMachine.fire(Trigger.NETWORK_LOST)
             Timber.d("onLost")
         }
     }
+    private var isNetworkAvailable: Boolean = true
+    private var reopenCount = 0
+    private val reopenRunnable = Runnable {
+        reopenCount++
+        stateMachine.fire(Trigger.OPEN)
+    }
+    private val handler = Handler(Looper.getMainLooper())
 
     init {
         initStateMachine()
@@ -104,6 +115,7 @@ class WebSocketClient @Inject constructor(
             .ignore(Trigger.NETWORK_AVAILABLE)
 
         stateMachineConfig.configure(State.OPENED)
+            .onEntry(Action { resetReopen() })
             .permit(Trigger.WS_FAILED, State.WAITING_FOR_REOPEN)
             .permit(Trigger.WS_CLOSING, State.CLOSING)
             .permit(Trigger.CLOSE, State.CLOSING)
@@ -125,12 +137,13 @@ class WebSocketClient @Inject constructor(
             .ignore(Trigger.NETWORK_AVAILABLE)
 
         stateMachineConfig.configure(State.WAITING_FOR_REOPEN)
-            .onEntry(Action {  })
-            .permit(Trigger.OPEN, State.OPENING)
+            .onEntry(Action { reopen() })
+            .permitIf(Trigger.OPEN, State.OPENING)  { isNetworkAvailable }
+            .permitReentryIf(Trigger.OPEN) { !isNetworkAvailable }
             .permit(Trigger.NETWORK_AVAILABLE, State.OPENING)
+            .permit(Trigger.CLOSE, State.CLOSED)
             .ignore(Trigger.NETWORK_LOST)
             .ignore(Trigger.WS_FAILED)
-            // TODO add triggers
 
         stateMachine.setTrace(object : Trace<State, Trigger> {
             override fun transition(trigger: Trigger?, source: State?, destination: State?) {
@@ -154,7 +167,7 @@ class WebSocketClient @Inject constructor(
     }
 
     private fun close() {
-        webSocket?.close(1000, "Socket closed") // TODO magic number
+        webSocket?.close(WS_NORMAL_CLOSE_CODE, "Socket closed")
     }
 
     private fun cancelAll() {
@@ -163,7 +176,19 @@ class WebSocketClient @Inject constructor(
         messageChannel = createMessageChannel()
     }
 
-    private fun createMessageChannel(): BroadcastChannel<String> = BroadcastChannel(1000) // TODO magic number
+    private fun reopen() {
+        val exponentialBackOffDelay = MAX_BACKOFF_INTERVAL
+            .coerceAtMost(
+                INITIAL_BACKOFF_INTERVAL * (2.0).pow(reopenCount.toDouble()).toLong()
+            )
+        handler.postDelayed(reopenRunnable, exponentialBackOffDelay)
+    }
+
+    private fun resetReopen() {
+        reopenCount = 0
+    }
+
+    private fun createMessageChannel(): BroadcastChannel<String> = BroadcastChannel(CHANNEL_BUFFER_CAPACITY)
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         this.webSocket = webSocket
@@ -215,5 +240,12 @@ class WebSocketClient @Inject constructor(
         WS_CLOSED,
         NETWORK_AVAILABLE,
         NETWORK_LOST,
+    }
+
+    companion object {
+        private const val INITIAL_BACKOFF_INTERVAL = 1000L // 1 second
+        private const val MAX_BACKOFF_INTERVAL = 120000L // 2 minutes
+        private const val CHANNEL_BUFFER_CAPACITY = 1000 //
+        const val WS_NORMAL_CLOSE_CODE = 1000
     }
 }

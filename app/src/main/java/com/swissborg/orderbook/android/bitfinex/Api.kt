@@ -1,8 +1,8 @@
 package com.swissborg.orderbook.android.bitfinex
 
 import com.google.gson.*
+import com.swissborg.orderbook.model.Ticker
 import com.swissborg.orderbook.repository.OrderBookRepository
-import java.lang.Exception
 import java.lang.reflect.Type
 
 class Api {
@@ -18,8 +18,8 @@ class Api {
         val high: Double,
         val low: Double
     ) {
-        fun toTicker(): com.swissborg.orderbook.repository.Ticker {
-            return com.swissborg.orderbook.repository.Ticker(
+        fun toTicker(): com.swissborg.orderbook.model.Ticker {
+            return Ticker(
                 lastPrice,
                 volume,
                 low,
@@ -34,8 +34,8 @@ class Api {
         val count: Int,
         val amount: Double
     ) {
-        fun toOrderBook(): com.swissborg.orderbook.repository.OrderBook {
-            return com.swissborg.orderbook.repository.OrderBook(
+        fun toOrderBook(): com.swissborg.orderbook.model.OrderBook {
+            return com.swissborg.orderbook.model.OrderBook(
                 price,
                 count,
                 amount
@@ -112,5 +112,36 @@ class OrderBookDeserializer : JsonDeserializer<Api.OrderBook> {
             jsonArray.get(1).asInt,
             jsonArray.get(2).asDouble
         )
+    }
+}
+
+class OrderBookListDeserializer : JsonDeserializer<List<Api.OrderBook>> {
+    override fun deserialize(
+        json: JsonElement?,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): List<Api.OrderBook> {
+        val list = mutableListOf<Api.OrderBook>()
+        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonArray expected")
+        if (jsonArray.size() == 2) {
+            // list or heart beat
+            if (jsonArray.get(1).isJsonArray) {
+                jsonArray.get(1).asJsonArray.forEach { jsonElement ->
+                    val orderBook = context?.deserialize<Api.OrderBook>(jsonElement, Api.OrderBook::class.java)
+                    orderBook?.run { list.add(orderBook) }
+                }
+            }
+        } else {
+            if (jsonArray.size() < 4) throw JsonParseException("Not enough elements")
+            // update
+            // position 0 is channel id
+            val orderBook = Api.OrderBook(
+                jsonArray.get(1).asDouble,
+                jsonArray.get(2).asInt,
+                jsonArray.get(3).asDouble
+            )
+            list.add(orderBook)
+        }
+        return list
     }
 }

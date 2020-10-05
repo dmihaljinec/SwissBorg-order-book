@@ -37,6 +37,7 @@ object ApplicationModule {
             .registerTypeAdapter(ChannelMessage::class.java, ChannelMessageDeserializer())
             .registerTypeAdapter(Api.Ticker::class.java, TickerDeserializer())
             .registerTypeAdapter(Api.OrderBook::class.java, OrderBookDeserializer())
+            .registerTypeAdapter(List::class.java, OrderBookListDeserializer())
             .excludeFieldsWithoutExposeAnnotation()
             .create()
     }

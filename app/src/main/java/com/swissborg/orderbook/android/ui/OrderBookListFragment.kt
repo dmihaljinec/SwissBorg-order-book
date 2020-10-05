@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class OrderBookListFragment : Fragment() {
+    private val adapter = OrderBookListAdapter()
     private val orderBookListFragmentViewModel: OrderBookListFragmentViewModel by viewModels()
 
     override fun onCreateView(
@@ -27,9 +28,12 @@ class OrderBookListFragment : Fragment() {
             container,
             false
         )
-        binding.orderBook = orderBookListFragmentViewModel
+        binding.list.adapter = adapter
+        binding.list.removeAdapter(viewLifecycleOwner)
+        binding.orderBooks = orderBookListFragmentViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.toolbar.title = OrderBookRepository.CurrencyPair.BTCUSD.toString()
+        orderBookListFragmentViewModel.orderBookList.observe(viewLifecycleOwner) { adapter.submitList(it) }
         return binding.root
     }
 }

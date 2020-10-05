@@ -5,9 +5,12 @@ import com.github.oxo42.stateless4j.StateMachineConfig
 import com.github.oxo42.stateless4j.delegates.Action
 import com.github.oxo42.stateless4j.delegates.Trace
 import com.google.gson.Gson
+import com.swissborg.orderbook.model.ConnectionState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
@@ -16,7 +19,8 @@ abstract class Channel(
     val name: String,
     val currencyPair: String,
     protected val connection: Connection,
-    protected val gson: Gson
+    protected val gson: Gson,
+    private val tag: String
 ) {
     private val stateMachineConfig = StateMachineConfig<State, Trigger>()
     protected val stateMachine = StateMachine(State.UNSUBSCRIBED, stateMachineConfig)
@@ -41,22 +45,25 @@ abstract class Channel(
         else throw IllegalStateException("Expected $state state")
     }
 
-    protected suspend fun getMessages(): Flow<String> {
-        connection.connect()
-        stateMachine.fire(Trigger.SUBSCRIBE)
-        return flowOf(connection.connectionState(), connection.getMessages(this))
+    protected suspend fun messages(): Flow<String> {
+        withContext(Dispatchers.IO) {
+            connection.connect()
+            stateMachine.fire(Trigger.SUBSCRIBE)
+        }
+        return flowOf(connection.connectionState(), connection.messages(this))
             .flattenMerge()
             .transform {
-                if (it is Connection.State) connectionStateChanged(it)
+                if (it is ConnectionState) connectionStateChanged(it)
                 else if (it is String) emit(it)
             }
             .onCompletion {
                 stateMachine.fire(Trigger.UNSUBSCRIBE)
                 connection.disconnect()
+                Timber.tag(tag)
                 Timber.d("onCompletion done")
             }
+            .flowOn(Dispatchers.IO)
             .catch {
-                Timber.w("${it.message}")
             }
     }
 
@@ -68,11 +75,27 @@ abstract class Channel(
         }
     }
 
-    private fun connectionStateChanged(state: Connection.State) {
+    private fun connectionStateChanged(state: ConnectionState) {
         when (state) {
-            Connection.State.CONNECTED -> stateMachine.fire(Trigger.CONNECTED)
-            Connection.State.CONNECTING -> stateMachine.fire(Trigger.CONNECTING)
-            Connection.State.DISCONNECTED -> stateMachine.fire(Trigger.DISCONNECTED)
+            ConnectionState.CONNECTED -> stateMachine.fire(Trigger.CONNECTED)
+            ConnectionState.CONNECTING -> stateMachine.fire(Trigger.CONNECTING)
+            ConnectionState.DISCONNECTED -> stateMachine.fire(Trigger.DISCONNECTED)
+        }
+    }
+
+    protected fun processEvent(event: String) {
+        event.channelEvent(gson)?.run {
+            when (this.event) {
+                Api.EVENT_SUBSCRIBED -> {
+                    event.subscribeEvent(gson)?.run {
+                        id = this.channelId
+                    }
+                    stateMachine.fire(Trigger.SUBSCRIBED)
+                }
+                Api.EVENT_UNSUBSCRIBED -> stateMachine.fire(Trigger.UNSUBSCRIBED)
+                Api.EVENT_ERROR -> processError(event.errorEvent(gson))
+                else -> Unit
+            }
         }
     }
 
@@ -97,9 +120,10 @@ abstract class Channel(
                 }
                 else -> {
                     stateMachine.fire(Trigger.ERROR)
-                    ""
+                    "search for description at https://docs.bitfinex.com/docs/abbreviations-glossary"
                 }
             }
+            Timber.tag(tag)
             Timber.d("Error code: ${error.code} $description")
         }
     }
@@ -153,6 +177,7 @@ abstract class Channel(
             override fun transition(trigger: Trigger?, source: State?, destination: State?) {
                 destination?.run {
                     _state.value = this
+                    Timber.tag(tag)
                     Timber.d("$source --> $this")
                 }
             }
@@ -160,21 +185,18 @@ abstract class Channel(
             override fun trigger(trigger: Trigger?) = Unit
         })
 
-        stateMachine.onUnhandledTrigger { state, trigger -> Timber.d("Unhandled trigger $trigger in state $state") }
+        stateMachine.onUnhandledTrigger { state, trigger ->
+            Timber.tag(tag)
+            Timber.d("Unhandled trigger $trigger in state $state")
+        }
     }
 
     interface Connection {
         suspend fun connect()
         suspend fun disconnect()
         fun send(request: String)
-        fun connectionState(): Flow<State>
-        fun getMessages(channel: Channel): Flow<String>
-
-        enum class State {
-            CONNECTED, // ready for subscription
-            CONNECTING, // not connected, either connection/disconnecting or reconnecting
-            DISCONNECTED, // disconnected
-        }
+        fun connectionState(): Flow<ConnectionState>
+        fun messages(channel: Channel): Flow<String>
     }
 
     enum class State {

@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="orderBook"
+            name="orderBooks"
             type="com.swissborg.orderbook.android.ui.OrderBookListFragmentViewModel" />
     </data>
 
@@ -24,7 +24,15 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="@{orderBook.tickerViewModel.lastTradePrice}" />
+            android:text="@{orderBooks.tickerViewModel.lastTradePrice}" />
+
+        <TextView
+            android:id="@+id/connection_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{orderBooks.connectionStateViewModel.connectionState}" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"

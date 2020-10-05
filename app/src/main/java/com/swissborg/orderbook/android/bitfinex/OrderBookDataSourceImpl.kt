@@ -1,10 +1,11 @@
 package com.swissborg.orderbook.android.bitfinex
 
 import com.google.gson.Gson
-import com.swissborg.orderbook.repository.OrderBook
+import com.swissborg.orderbook.model.ConnectionState
+import com.swissborg.orderbook.model.OrderBook
 import com.swissborg.orderbook.repository.OrderBookDataSource
 import com.swissborg.orderbook.repository.OrderBookRepository
-import com.swissborg.orderbook.repository.Ticker
+import com.swissborg.orderbook.model.Ticker
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -17,11 +18,6 @@ class OrderBookDataSourceImpl(
     private val gson: Gson
 ) : OrderBookDataSource {
 
-    override suspend fun getOrderBook(): Flow<List<OrderBook>> {
-        TODO("Not yet implemented")
-    }
-
-
     override suspend fun getTicker(currencyPair: OrderBookRepository.CurrencyPair): Flow<Ticker> {
         return TickerChannel(
             currencyPair,
@@ -29,5 +25,20 @@ class OrderBookDataSourceImpl(
             gson
         ).getTicker()
             .map { apiTicker -> apiTicker.toTicker() }
+    }
+
+    override suspend fun getOrderBooks(currencyPair: OrderBookRepository.CurrencyPair): Flow<List<OrderBook>> {
+        return OrderBooksChannel(
+            currencyPair,
+            channelConnection,
+            gson
+        ).getOrderBooks()
+            .map { apiOrderBookList -> apiOrderBookList
+                .map { apiOrderBook -> apiOrderBook.toOrderBook() }
+            }
+    }
+
+    override suspend fun getConnectionState(): Flow<ConnectionState> {
+        return channelConnection.connectionState()
     }
 }
