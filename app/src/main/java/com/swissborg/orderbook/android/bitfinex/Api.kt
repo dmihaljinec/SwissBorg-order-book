@@ -99,6 +99,18 @@ class TickerDeserializer : JsonDeserializer<Api.Ticker> {
     }
 }
 
+fun String.toOrderBookList(gson: Gson): List<Api.OrderBook> {
+    val list = mutableListOf<Api.OrderBook>()
+    try {
+        gson.fromJson(this, List::class.java).forEach { element ->
+            (element as? Api.OrderBook)?.run { list.add(this) }
+        }
+    } catch (e: Exception) {
+
+    }
+    return list
+}
+
 class OrderBookDeserializer : JsonDeserializer<Api.OrderBook> {
     override fun deserialize(
         json: JsonElement?,
