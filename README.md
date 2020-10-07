@@ -26,15 +26,15 @@ This project is using Kotlin coroutines, BroadcastChannel and Flow to implement 
 
 [MainActivity][12] hosts OrderBookListFragment.
 
-[1]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/ws/WebSocketClient.kt
-[2]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/ChannelConnection.kt
-[3]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Channel.kt
-[4]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/TickerChannel.kt
-[5]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/OrderBooksChannel.kt
-[6]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Api.kt
-[7]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/OrderBookDataSourceImpl.kt
-[8]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/repository/OrderBookRepository.kt
-[9]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/interactor/OrderBookInteractors.kt
-[10]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragmentViewModel.kt
-[11]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragment.kt
-[12]: https://github.com/dmihaljinec/BelaMiVi/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/MainActivity.kt
+[1]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ws/WebSocketClient.kt
+[2]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/ChannelConnection.kt
+[3]: https://github.com/dmihaljinec/SwissBorg-order-booki/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Channel.kt
+[4]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/TickerChannel.kt
+[5]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/OrderBooksChannel.kt
+[6]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Api.kt
+[7]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/OrderBookDataSourceImpl.kt
+[8]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/repository/OrderBookRepository.kt
+[9]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/interactor/OrderBookInteractors.kt
+[10]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragmentViewModel.kt
+[11]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragment.kt
+[12]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/MainActivity.kt
