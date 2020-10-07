@@ -36,7 +36,7 @@ Apache License, Version 2.0. See the [LICENSE][13] file for details.
 
 [1]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ws/WebSocketClient.kt
 [2]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/ChannelConnection.kt
-[3]: https://github.com/dmihaljinec/SwissBorg-order-booki/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Channel.kt
+[3]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Channel.kt
 [4]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/TickerChannel.kt
 [5]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/OrderBooksChannel.kt
 [6]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Api.kt
