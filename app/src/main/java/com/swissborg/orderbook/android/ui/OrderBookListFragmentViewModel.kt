@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.swissborg.orderbook.android.ui.viewmodel.ConnectionStateViewModel
+import com.swissborg.orderbook.android.ui.viewmodel.OrderBookViewModel
+import com.swissborg.orderbook.android.ui.viewmodel.TickerViewModel
+import com.swissborg.orderbook.android.ui.viewmodel.toViewModel
 import com.swissborg.orderbook.interactor.OrderBookInteractors
-import com.swissborg.orderbook.model.OrderBook
-import com.swissborg.orderbook.model.Ticker
 import com.swissborg.orderbook.repository.OrderBookRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
@@ -17,11 +19,11 @@ import kotlinx.coroutines.launch
 class OrderBookListFragmentViewModel @ViewModelInject constructor(
     private val interactors: OrderBookInteractors
 ) : ViewModel() {
-    private val _tickerViewModel = MutableLiveData<Ticker>()
-    val tickerViewModel: LiveData<Ticker>
+    private val _tickerViewModel = MutableLiveData<TickerViewModel>()
+    val tickerViewModel: LiveData<TickerViewModel>
         get() = _tickerViewModel
-    private val _orderBookList = MutableLiveData<List<OrderBook>>()
-    val orderBookList: LiveData<List<OrderBook>>
+    private val _orderBookList = MutableLiveData<List<OrderBookViewModel>>()
+    val orderBookList: LiveData<List<OrderBookViewModel>>
         get() = _orderBookList
 
     private val _connectionStateViewModel = MutableLiveData<ConnectionStateViewModel>()
@@ -31,19 +33,23 @@ class OrderBookListFragmentViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch {
             val ticker = async {
-                interactors.getTicker(OrderBookRepository.CurrencyPair.BTCUSD).collect { ticker ->
-                    _tickerViewModel.value = ticker
-                }
+                interactors.getTicker(OrderBookRepository.CurrencyPair.BTCUSD)
+                    .map { ticker -> ticker.toViewModel() }
+                    .collect { ticker ->
+                        _tickerViewModel.value = ticker
+                    }
             }
             val orderBookList = async {
-                interactors.getOrderBooks(OrderBookRepository.CurrencyPair.BTCUSD).collect { orderBookList ->
-                    _orderBookList.value = orderBookList
-                }
+                interactors.getOrderBooks(OrderBookRepository.CurrencyPair.BTCUSD)
+                    .map { orderBookList -> orderBookList.map { orderBook -> orderBook.toViewModel() } }
+                    .collect { orderBookList ->
+                        _orderBookList.value = orderBookList
+                    }
             }
             val connectionState = async {
                 interactors.getConnectionState()
                     .map { connectionState ->
-                        connectionState.toConnectionStateViewModel(coroutineContext)
+                        connectionState.toViewModel()
                     }
                     .collect { connectionStateViewModel ->
                         _connectionStateViewModel.value = connectionStateViewModel

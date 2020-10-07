@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="ticker"
+            type="com.swissborg.orderbook.android.ui.viewmodel.TickerViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/label_last_price"
+            style="@style/OrderBook.Ticker.Label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/titleLastPrice" />
+
+        <TextView
+            android:id="@+id/last_price"
+            style="@style/OrderBook.Ticker.Value"
+            app:layout_constraintTop_toBottomOf="@id/label_last_price"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{ticker.lastTradePrice()}"
+            android:textColor="@color/colorWhite" />
+
+        <TextView
+            android:id="@+id/label_high"
+            style="@style/OrderBook.Ticker.Label"
+            android:paddingTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/last_price"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/titleHigh" />
+
+        <TextView
+            android:id="@+id/high"
+            style="@style/OrderBook.Ticker.Value"
+            app:layout_constraintTop_toBottomOf="@id/label_high"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{ticker.high()}"/>
+
+        <TextView
+            android:id="@+id/label_low"
+            style="@style/OrderBook.Ticker.Label"
+            android:paddingTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/high"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/titleLow" />
+
+        <TextView
+            android:id="@+id/low"
+            style="@style/OrderBook.Ticker.Value"
+            app:layout_constraintTop_toBottomOf="@id/label_low"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{ticker.low()}"/>
+
+        <TextView
+            android:id="@+id/label_daily_change"
+            style="@style/OrderBook.Ticker.Label"
+            android:paddingTop="10dp"
+            app:layout_constraintTop_toTopOf="@id/label_high"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/titleDailyChange" />
+
+        <TextView
+            android:id="@+id/daily_change"
+            style="@style/OrderBook.Ticker.Value"
+            app:layout_constraintTop_toTopOf="@id/high"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{ticker.dailyChangePercentage()}"/>
+
+        <TextView
+            android:id="@+id/label_volume"
+            style="@style/OrderBook.Ticker.Label"
+            android:paddingTop="10dp"
+            app:layout_constraintTop_toTopOf="@id/label_low"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/titleVolume" />
+
+        <TextView
+            android:id="@+id/volume"
+            style="@style/OrderBook.Ticker.Value"
+            app:layout_constraintTop_toTopOf="@id/low"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{ticker.volume()}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

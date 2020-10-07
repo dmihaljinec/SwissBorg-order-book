@@ -16,11 +16,13 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
 
-        <activity android:name="com.swissborg.orderbook.android.ui.MainActivity">
+        <activity android:name="com.swissborg.orderbook.android.ui.MainActivity" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
     </application>

@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">SwissBorg Order Book</string>
+    <string name="titleLastPrice">Last price</string>
+    <string name="titleHigh">High</string>
+    <string name="titleLow">Low</string>
+    <string name="titleDailyChange">Daily change</string>
+    <string name="titleVolume">Volume</string>
+    <string name="titleBuyPrice">Buy price</string>
+    <string name="titleBuyAmount">Buy amount</string>
+    <string name="titleSellPrice">Sell price</string>
+    <string name="titleSellAmount">Sell amount</string>
 </resources>

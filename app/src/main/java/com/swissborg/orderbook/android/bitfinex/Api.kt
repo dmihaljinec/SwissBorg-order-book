@@ -1,9 +1,11 @@
 package com.swissborg.orderbook.android.bitfinex
 
 import com.google.gson.*
+import com.swissborg.orderbook.model.Order
 import com.swissborg.orderbook.model.Ticker
 import com.swissborg.orderbook.repository.OrderBookRepository
 import java.lang.reflect.Type
+import kotlin.math.absoluteValue
 
 class Api {
     data class Ticker(
@@ -12,7 +14,7 @@ class Api {
         val ask: Double,
         val askSize: Double,
         val dailyChange: Double,
-        val dailyChangePerc: Double,
+        val dailyChangePercentage: Double,
         val lastPrice: Double,
         val volume: Double,
         val high: Double,
@@ -24,7 +26,7 @@ class Api {
                 volume,
                 low,
                 high,
-                dailyChange
+                dailyChangePercentage
             )
         }
     }
@@ -34,11 +36,14 @@ class Api {
         val count: Int,
         val amount: Double
     ) {
-        fun toOrderBook(): com.swissborg.orderbook.model.OrderBook {
-            return com.swissborg.orderbook.model.OrderBook(
+        fun toOrder(): Order {
+            // Amount in orderBook contains information if this is a sell or buy order.
+            // Positive numbers are buy order, while negative are sell order. When we split
+            // buying and selling OrderBooks, Order amount should always be positive.
+            return Order(
                 price,
-                count,
-                amount
+                amount.absoluteValue,
+                count
             )
         }
     }
@@ -58,6 +63,16 @@ class Api {
         const val EVENT_ERROR = "error"
 
         const val FIELD_CHANNEL_ID = "chanId"
+        const val FIELD_PRECISION = "prec"
+        const val FIELD_FREQUENCY = "freq"
+
+        const val PRECISION_LEVEL_0 = "P0"
+        const val PRECISION_LEVEL_1 = "P1"
+        const val PRECISION_LEVEL_2 = "P2"
+        const val PRECISION_LEVEL_3 = "P3"
+
+        const val FREQUENCY_UPDATES_REALTIME = "F0"
+        const val FREQUENCY_UPDATES_EVERY_2_SECONDS = "F1"
     }
 }
 

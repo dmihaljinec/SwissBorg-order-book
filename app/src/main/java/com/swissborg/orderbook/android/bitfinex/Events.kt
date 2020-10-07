@@ -35,14 +35,14 @@ data class SubscribeBook(
     @Expose
     val pair: String,
     @Expose(serialize = false, deserialize = true)
-    @SerializedName("chanId")
+    @SerializedName(Api.FIELD_CHANNEL_ID)
     val channelId: Int = -1,
     @Expose
-    @SerializedName("prec")
-    val precision: String = "P0",
+    @SerializedName(Api.FIELD_PRECISION)
+    val precision: String = Api.PRECISION_LEVEL_0,
     @Expose
-    @SerializedName("freq")
-    val frequency: String = "F1"
+    @SerializedName(Api.FIELD_FREQUENCY)
+    val frequency: String = Api.FREQUENCY_UPDATES_REALTIME
 )
 
 data class Unsubscribe(
@@ -61,7 +61,6 @@ data class Error(
     @Expose
     val code: Int,
 )
-
 
 fun String.isEvent(gson: Gson): Boolean {
     return try {

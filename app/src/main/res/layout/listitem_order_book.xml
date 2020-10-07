@@ -5,49 +5,72 @@
     <data>
         <variable
             name="orderBook"
-            type="com.swissborg.orderbook.model.OrderBook" />
+            type="com.swissborg.orderbook.android.ui.viewmodel.OrderBookViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp" >
 
-        <TextView
-            android:id="@+id/price"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <TextView
+            android:id="@+id/buy_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="0.6"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/buy_price"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:gravity="center"
-            android:text="@{orderBook.price}" />
+            android:gravity="start"
+            android:text='@{orderBook.buyAmount()}' />
 
         <TextView
-            android:id="@+id/count"
-            android:layout_width="wrap_content"
+            android:id="@+id/buy_price"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintHorizontal_weight="0.4"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/price"
+            app:layout_constraintStart_toEndOf="@id/buy_amount"
+            app:layout_constraintEnd_toStartOf="@id/middle"
             app:layout_constraintBottom_toBottomOf="parent"
             android:gravity="center"
-            android:text='@{"" + orderBook.count}' />
+            android:text='@{orderBook.buyPrice()}' />
 
         <TextView
-            android:id="@+id/amount"
-            android:layout_width="wrap_content"
+            android:id="@+id/sell_price"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintHorizontal_weight="0.4"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/middle"
+            app:layout_constraintEnd_toStartOf="@id/sell_amount"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:text='@{orderBook.sellPrice()}' />
+
+        <TextView
+            android:id="@+id/sell_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="0.6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/sell_price"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:gravity="center"
-            android:text="@{orderBook.amount}" />
+            android:gravity="end"
+            android:text='@{orderBook.sellAmount()}' />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

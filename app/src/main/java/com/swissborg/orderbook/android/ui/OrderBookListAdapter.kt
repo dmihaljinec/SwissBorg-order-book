@@ -5,9 +5,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.swissborg.orderbook.android.BR
 import com.swissborg.orderbook.android.R
-import com.swissborg.orderbook.model.OrderBook
+import com.swissborg.orderbook.android.ui.viewmodel.DataBindingViewHolder
+import com.swissborg.orderbook.android.ui.viewmodel.OrderBookViewModel
 
-class OrderBookListAdapter : ListAdapter<OrderBook, DataBindingViewHolder>(diffCallback) {
+class OrderBookListAdapter : ListAdapter<OrderBookViewModel, DataBindingViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataBindingViewHolder {
         return DataBindingViewHolder(
             parent,
@@ -22,11 +23,12 @@ class OrderBookListAdapter : ListAdapter<OrderBook, DataBindingViewHolder>(diffC
     }
 
     companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<OrderBook>() {
-            override fun areItemsTheSame(oldItem: OrderBook, newItem: OrderBook): Boolean {
-                return oldItem.price == newItem.price
+        private val diffCallback = object : DiffUtil.ItemCallback<OrderBookViewModel>() {
+            override fun areItemsTheSame(oldItem: OrderBookViewModel, newItem: OrderBookViewModel): Boolean {
+                return oldItem.orderBook.buy?.price == newItem.orderBook.buy?.price &&
+                        oldItem.orderBook.sell?.price == oldItem.orderBook.sell?.price
             }
-            override fun areContentsTheSame(oldItem: OrderBook, newItem: OrderBook): Boolean {
+            override fun areContentsTheSame(oldItem: OrderBookViewModel, newItem: OrderBookViewModel): Boolean {
                 return oldItem == newItem
             }
         }

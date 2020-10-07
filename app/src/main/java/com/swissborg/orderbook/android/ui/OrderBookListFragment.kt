@@ -7,10 +7,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.swissborg.orderbook.android.R
 import com.swissborg.orderbook.android.databinding.FragmentOrderBookListBinding
 import com.swissborg.orderbook.repository.OrderBookRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.order_book_list.view.*
 
 @AndroidEntryPoint
 class OrderBookListFragment : Fragment() {
@@ -28,12 +30,13 @@ class OrderBookListFragment : Fragment() {
             container,
             false
         )
-        binding.list.adapter = adapter
-        binding.list.removeAdapter(viewLifecycleOwner)
+        binding.orderBookList.list.adapter = adapter
+        binding.orderBookList.list.removeAdapter(viewLifecycleOwner)
         binding.orderBooks = orderBookListFragmentViewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.toolbar.title = OrderBookRepository.CurrencyPair.BTCUSD.toString()
         orderBookListFragmentViewModel.orderBookList.observe(viewLifecycleOwner) { adapter.submitList(it) }
+        (binding.orderBookList.list.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         return binding.root
     }
 }

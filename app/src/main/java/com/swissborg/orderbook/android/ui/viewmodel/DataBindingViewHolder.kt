@@ -1,4 +1,4 @@
-package com.swissborg.orderbook.android.ui
+package com.swissborg.orderbook.android.ui.viewmodel
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

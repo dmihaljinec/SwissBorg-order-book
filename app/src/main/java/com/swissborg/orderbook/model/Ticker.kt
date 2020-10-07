@@ -5,5 +5,5 @@ data class Ticker(
     val volume: Double,
     val low: Double,
     val high: Double,
-    val dailyChange: Double
+    val dailyChangePercentage: Double
 )

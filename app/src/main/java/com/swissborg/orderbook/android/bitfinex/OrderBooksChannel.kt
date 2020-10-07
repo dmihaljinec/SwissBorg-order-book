@@ -31,12 +31,12 @@ class OrderBooksChannel(
                     message
                         .toOrderBookList(gson)
                         .forEach { apiOrderBook ->
-                            orderBooks[apiOrderBook.price] = apiOrderBook
+                            if (apiOrderBook.count == 0) orderBooks.remove(apiOrderBook.price)
+                            else orderBooks[apiOrderBook.price] = apiOrderBook
                         }
                     emit(
                         orderBooks.values
                             .toList()
-                            .sortedBy { it.price }
                     )
                 }
             }
