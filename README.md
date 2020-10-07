@@ -8,7 +8,7 @@ This project is using Kotlin coroutines, BroadcastChannel and Flow to implement 
 
 ![alt text](https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/SwissBorg-order-book-data-flow.png?raw=true)
 
-[WebSocketClient][1] is responsible for making a websocket connection with Bitfinex server and to automatically reconnect if conenction is lost. Once connection is established WebSocketClient user can send events to Bitfinex server and receive messages from it. Incoming messages represent a hot stream and are pushed to broadcast channel without any modification. User can get those messages as kotlin Flow.
+[WebSocketClient][1] is responsible for making a websocket connection with Bitfinex server and to automatically reconnect if connection is lost. Once connection is established WebSocketClient user can send events to Bitfinex server and receive messages from it. Incoming messages represent a hot stream and are pushed to broadcast channel without any modification. User can get those messages as kotlin Flow.
 
 [ChannelConnection][2] is user of WebSocketClient that allows multiple channels to share web socket connection. Channels connected to ChannelConnection will receive messages that belong to that channel. Messages are filtered by channel name, currency pair and channel id. ChannelConnection does not modify messages it only filters them.
 
