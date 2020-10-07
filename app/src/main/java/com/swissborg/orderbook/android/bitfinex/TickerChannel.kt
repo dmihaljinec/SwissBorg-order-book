@@ -14,7 +14,7 @@ import timber.log.Timber
 @FlowPreview
 class TickerChannel(
     currencyPair: OrderBookRepository.CurrencyPair,
-    connection: ChannelConnection,
+    connection: Connection,
     gson: Gson
 ) : Channel(
     Api.CHANNEL_TICKER,

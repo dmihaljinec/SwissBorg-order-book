@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.transform
 @FlowPreview
 class OrderBooksChannel(
     currencyPair: OrderBookRepository.CurrencyPair,
-    connection: ChannelConnection,
+    connection: Connection,
     gson: Gson
 ) : Channel(
     Api.CHANNEL_ORDER_BOOK,

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.map
 @FlowPreview
 @ExperimentalCoroutinesApi
 class OrderBookDataSourceImpl(
-    private val channelConnection: ChannelConnection,
+    private val channelConnection: Channel.Connection,
     private val gson: Gson
 ) : OrderBookDataSource {
 
