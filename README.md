@@ -3,7 +3,7 @@ SwissBorg Order Books
 This is an Android demonstration project that connects to Bitfinex websocket API (wss://api-pub.bitfinex.com/ws/1), subscribes to BTCUSD ticker and order book and shows this information to the user.
 
 Data Flow
-=========
+---------
 This project is using Kotlin coroutines, BroadcastChannel and Flow to implement reactive stream from repository down to view model. View model stores transformed models from flow into live data which fragment is observing to modify view.
 
 ![alt text](https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/SwissBorg-order-book-data-flow.png?raw=true)
@@ -26,6 +26,14 @@ This project is using Kotlin coroutines, BroadcastChannel and Flow to implement 
 
 [MainActivity][12] hosts OrderBookListFragment.
 
+Author
+------
+Damir Mihaljinec - @dmihaljinec on GitHub
+
+License
+-------
+Apache License, Version 2.0. See the [LICENSE][13] file for details.
+
 [1]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ws/WebSocketClient.kt
 [2]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/ChannelConnection.kt
 [3]: https://github.com/dmihaljinec/SwissBorg-order-booki/blob/master/app/src/main/java/com/swissborg/orderbook/android/bitfinex/Channel.kt
@@ -38,3 +46,4 @@ This project is using Kotlin coroutines, BroadcastChannel and Flow to implement 
 [10]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragmentViewModel.kt
 [11]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragment.kt
 [12]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/MainActivity.kt
+[13]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/LICENSE.md
