@@ -1,5 +1,7 @@
 package com.swissborg.orderbook.android.bitfinex
 
+import android.os.Handler
+import android.os.Looper
 import com.github.oxo42.stateless4j.StateMachine
 import com.github.oxo42.stateless4j.StateMachineConfig
 import com.github.oxo42.stateless4j.delegates.Action
@@ -28,6 +30,8 @@ abstract class Channel(
     val state: StateFlow<State>
         get() = _state
     var id: Int = -1
+    private val watchDogRunnable = Runnable { stateMachine.fire(Trigger.SUBSCRIBING_TIMEOUT) }
+    private val handler = Handler(Looper.getMainLooper())
 
     init {
         initStateMachine()
@@ -72,6 +76,8 @@ abstract class Channel(
     }
 
     protected fun processEvent(event: String) {
+        Timber.tag(tag)
+        Timber.d("Process event $event")
         event.channelEvent(gson)?.run {
             when (this.event) {
                 Api.EVENT_SUBSCRIBED -> {
@@ -92,6 +98,7 @@ abstract class Channel(
             val description = when (error.code) {
                 10301 -> {
                     stateMachine.fire(Trigger.ERROR_ALREADY_SUBSCRIBED)
+                    id = error.channelId
                     "Failed channel subscription: already subscribed"
                 }
                 10001 -> {
@@ -127,12 +134,19 @@ abstract class Channel(
             .ignore(Trigger.ERROR)
 
         stateMachineConfig.configure(State.SUBSCRIBING)
-            .onEntry(Action { subscribe() })
+            .onEntry(Action {
+                subscribe()
+                startWatchDog()
+            })
+            .onExit(Action {
+                cancelWatchDog()
+            })
             .permit(Trigger.SUBSCRIBED, State.SUBSCRIBED)
             .permit(Trigger.CONNECTING, State.WAITING_TO_RESUBSCRIBE)
             .permit(Trigger.DISCONNECTED, State.UNSUBSCRIBED)
             .permit(Trigger.ERROR_ALREADY_SUBSCRIBED, State.SUBSCRIBED)
             .permit(Trigger.ERROR, State.UNSUBSCRIBED)
+            .permitReentry(Trigger.SUBSCRIBING_TIMEOUT)
             .ignore(Trigger.CONNECTED)
 
         stateMachineConfig.configure(State.SUBSCRIBED)
@@ -170,13 +184,27 @@ abstract class Channel(
                 }
             }
 
-            override fun trigger(trigger: Trigger?) = Unit
+            override fun trigger(trigger: Trigger?) {
+                Timber.tag(tag)
+                Timber.d("fire trigger: $trigger")
+            }
         })
 
         stateMachine.onUnhandledTrigger { state, trigger ->
             Timber.tag(tag)
             Timber.d("Unhandled trigger $trigger in state $state")
         }
+    }
+
+    /**
+     * Sometimes we do not receive subscribed message, in that case we shell retry
+     */
+    private fun startWatchDog() {
+        handler.postDelayed(watchDogRunnable, SUBSCRIBING_TIMEOUT_INTERVAL)
+    }
+
+    private fun cancelWatchDog() {
+        handler.removeCallbacks(watchDogRunnable)
     }
 
     interface Connection {
@@ -205,5 +233,10 @@ abstract class Channel(
         CONNECTED,
         CONNECTING,
         DISCONNECTED,
+        SUBSCRIBING_TIMEOUT,
+    }
+
+    companion object {
+        private const val SUBSCRIBING_TIMEOUT_INTERVAL = 5000L // 5 seconds
     }
 }

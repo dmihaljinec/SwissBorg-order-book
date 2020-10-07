@@ -10,9 +10,12 @@ data class Event(
 )
 
 data class ChannelEvent(
-    @Expose val event: String,
-    @Expose val channel: String,
-    @Expose val pair: String
+    @Expose
+    val event: String,
+    @Expose
+    val channel: String,
+    @Expose
+    val pair: String
 )
 
 data class Subscribe(
@@ -60,6 +63,9 @@ data class Error(
     val msg: String,
     @Expose
     val code: Int,
+    @Expose
+    @SerializedName(Api.FIELD_CHANNEL_ID)
+    val channelId: Int
 )
 
 fun String.isEvent(gson: Gson): Boolean {

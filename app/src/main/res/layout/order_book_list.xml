@@ -16,7 +16,7 @@
     <TextView
         android:id="@+id/label_buy_amount"
         style="@style/OrderBook.Order.Label"
-        app:layout_constraintHorizontal_weight="0.6"
+        app:layout_constraintHorizontal_weight="0.55"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/label_buy_price"
@@ -27,8 +27,7 @@
     <TextView
         android:id="@+id/label_buy_price"
         style="@style/OrderBook.Order.Label"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintHorizontal_weight="0.45"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/label_buy_amount"
         app:layout_constraintEnd_toStartOf="@id/middle"
@@ -39,8 +38,7 @@
     <TextView
         android:id="@+id/label_sell_price"
         style="@style/OrderBook.Order.Label"
-        android:layout_marginStart="10dp"
-        app:layout_constraintHorizontal_weight="0.4"
+        app:layout_constraintHorizontal_weight="0.45"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/middle"
         app:layout_constraintEnd_toStartOf="@id/label_sell_amount"
@@ -51,7 +49,7 @@
     <TextView
         android:id="@+id/label_sell_amount"
         style="@style/OrderBook.Order.Label"
-        app:layout_constraintHorizontal_weight="0.6"
+        app:layout_constraintHorizontal_weight="0.55"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/label_sell_price"
         app:layout_constraintEnd_toEndOf="parent"

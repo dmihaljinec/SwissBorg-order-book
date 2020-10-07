@@ -61,13 +61,13 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
     implementation "androidx.recyclerview:recyclerview:${versions.recyclerView}"
     implementation "androidx.fragment:fragment-ktx:${versions.fragment}"
-    // OkHttp
+    // OkHttp network client
     implementation("com.squareup.okhttp3:okhttp:${versions.okhttp}")
-    // Gson
+    // Gson Json parser
     implementation "com.google.code.gson:gson:${versions.gson}"
     // Stateless4j state machine
     implementation "com.github.stateless4j:stateless4j:${versions.stateless4j}"
-    // Timber loggin library
+    // Timber logging library
     implementation "com.jakewharton.timber:timber:${versions.timber}"
     // Hilt (Dagger dependency injection)
     implementation "com.google.dagger:hilt-android:${versions.hiltDagger}"
@@ -77,7 +77,6 @@ dependencies {
     // Unit test
     testImplementation "junit:junit:${versions.junit}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutinesAndroidVersion}"
-    testImplementation "io.mockk:mockk:${versions.mockk}"
     // Android Instrumented test
     androidTestImplementation "androidx.test:core:${versions.androidTest}"
     androidTestImplementation "androidx.test:runner:${versions.androidTest}"

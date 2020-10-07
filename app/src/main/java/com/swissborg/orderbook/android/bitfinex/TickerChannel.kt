@@ -8,6 +8,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.transform
+import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -26,7 +27,10 @@ class TickerChannel(
         return messages()
             .transform { message ->
                 if (message.isEvent(gson)) processEvent(message)
-                else message.toTicker(gson)?.run { emit(this) }
+                else message.toTicker(gson)?.run {
+                    Timber.d("Api.Ticker last price = $lastPrice")
+                    emit(this)
+                }
             }
             .flowOn(Dispatchers.IO)
     }
