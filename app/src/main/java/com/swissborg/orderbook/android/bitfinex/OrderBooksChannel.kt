@@ -23,7 +23,7 @@ class OrderBooksChannel(
     OrderBooksChannel::class.java.simpleName
 ) {
     suspend fun getOrderBooks(): Flow<List<Api.OrderBook>> {
-        val orderBooks = mutableMapOf<Double, Api.OrderBook>()
+        val orderBooksByPrice = mutableMapOf<Double, Api.OrderBook>()
         return messages()
             .transform { message ->
                 if (message.isEvent(gson)) processEvent(message)
@@ -31,11 +31,11 @@ class OrderBooksChannel(
                     message
                         .toOrderBookList(gson)
                         .forEach { apiOrderBook ->
-                            if (apiOrderBook.count == 0) orderBooks.remove(apiOrderBook.price)
-                            else orderBooks[apiOrderBook.price] = apiOrderBook
+                            if (apiOrderBook.count == 0) orderBooksByPrice.remove(apiOrderBook.price)
+                            else orderBooksByPrice[apiOrderBook.price] = apiOrderBook
                         }
                     emit(
-                        orderBooks.values
+                        orderBooksByPrice.values
                             .toList()
                     )
                 }

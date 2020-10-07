@@ -96,7 +96,7 @@ class TickerDeserializer : JsonDeserializer<Api.Ticker> {
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): Api.Ticker {
-        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonArray expected")
+        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonElement is null")
         if (jsonArray.size() < 11) throw JsonParseException("Not enough elements")
         // Position 0 is channel id
         return Api.Ticker(
@@ -132,7 +132,7 @@ class OrderBookDeserializer : JsonDeserializer<Api.OrderBook> {
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): Api.OrderBook {
-        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonArray expected")
+        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonElement is null")
         if (jsonArray.size() < 3) throw JsonParseException("Not enough elements")
         return Api.OrderBook(
             jsonArray.get(0).asDouble,
@@ -149,7 +149,7 @@ class OrderBookListDeserializer : JsonDeserializer<List<Api.OrderBook>> {
         context: JsonDeserializationContext?
     ): List<Api.OrderBook> {
         val list = mutableListOf<Api.OrderBook>()
-        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonArray expected")
+        val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonElement is null")
         if (jsonArray.size() == 2) {
             // list or heart beat
             if (jsonArray.get(1).isJsonArray) {

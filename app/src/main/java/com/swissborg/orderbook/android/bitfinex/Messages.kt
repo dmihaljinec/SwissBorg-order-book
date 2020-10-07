@@ -15,7 +15,7 @@ class ChannelMessageDeserializer : JsonDeserializer<ChannelMessage> {
         context: JsonDeserializationContext?
     ): ChannelMessage {
         val jsonArray = json?.asJsonArray ?: throw JsonParseException("JsonElement is null")
-        val jsonPrimitive = jsonArray.get(0).asJsonPrimitive ?: throw JsonParseException("First element must be channel id")
+        val jsonPrimitive = jsonArray.get(0).asJsonPrimitive
         return ChannelMessage(jsonPrimitive.asInt)
     }
 }

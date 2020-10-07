@@ -10,9 +10,7 @@ class OrderBookRepository(
 ) {
 
     suspend fun getTicker(currencyPair: CurrencyPair): Flow<Ticker> = dataSource.getTicker(currencyPair)
-
     suspend fun getOrderBooks(currencyPair: CurrencyPair): Flow<List<OrderBook>> = dataSource.getOrderBooks(currencyPair)
-
     suspend fun getConnectionState(): Flow<ConnectionState> = dataSource.getConnectionState()
 
     enum class CurrencyPair {

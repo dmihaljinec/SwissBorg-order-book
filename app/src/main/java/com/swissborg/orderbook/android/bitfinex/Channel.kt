@@ -33,18 +33,6 @@ abstract class Channel(
         initStateMachine()
     }
 
-    suspend fun waitForState(state: State) {
-        if (stateMachine.state == state) return
-        when (state) {
-            State.SUBSCRIBED -> stateMachine.fire(Trigger.SUBSCRIBE)
-            State.UNSUBSCRIBED -> stateMachine.fire(Trigger.UNSUBSCRIBE)
-            else -> Unit
-        }
-        this.state.waitForValue(state)
-        if (this.state.value == state) return
-        else throw IllegalStateException("Expected $state state")
-    }
-
     protected suspend fun messages(): Flow<String> {
         withContext(Dispatchers.IO) {
             connection.connect()

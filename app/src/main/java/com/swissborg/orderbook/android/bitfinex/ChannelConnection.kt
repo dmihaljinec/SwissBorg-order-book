@@ -18,7 +18,7 @@ class ChannelConnection(
 
     override suspend fun connect() {
         webSocketClient.waitForState(WebSocketClient.State.OPENED)
-        connectedChannels++
+        connectedChannels++ // TODO this should be more error prone regarding channels
     }
 
     override suspend fun disconnect() {
