@@ -72,8 +72,9 @@ class WebSocketClient @Inject constructor(
             else -> Unit
         }
         webSocketState.waitForValue(state)
-        if (webSocketState.value == state) return
-        else throw IllegalStateException("Expected $state state")
+        if (webSocketState.value != state) {
+            Timber.w("Expected $state state")
+        }
     }
 
     fun connect() {
@@ -107,7 +108,7 @@ class WebSocketClient @Inject constructor(
             .onEntry(Action { open() })
             .permit(Trigger.WS_OPENED, State.OPENED)
             .permit(Trigger.CLOSE, State.CLOSING)
-            .permit(Trigger.WS_FAILED, State.CLOSED)
+            .permit(Trigger.WS_FAILED, State.WAITING_FOR_REOPEN)
             .permit(Trigger.WS_CLOSING, State.CLOSED)
             .permit(Trigger.WS_CLOSED, State.CLOSED)
             .permit(Trigger.NETWORK_LOST, State.WAITING_FOR_REOPEN)
