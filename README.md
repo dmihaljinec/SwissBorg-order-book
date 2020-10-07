@@ -46,4 +46,4 @@ Apache License, Version 2.0. See the [LICENSE][13] file for details.
 [10]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragmentViewModel.kt
 [11]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/OrderBookListFragment.kt
 [12]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/app/src/main/java/com/swissborg/orderbook/android/ui/MainActivity.kt
-[13]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/LICENSE.md
+[13]: https://github.com/dmihaljinec/SwissBorg-order-book/blob/master/LICENSE
