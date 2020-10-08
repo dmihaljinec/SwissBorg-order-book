@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
@@ -38,11 +37,11 @@ abstract class Channel(
     }
 
     protected suspend fun messages(): Flow<String> {
-        withContext(Dispatchers.IO) {
-            connection.connect()
-            stateMachine.fire(Trigger.SUBSCRIBE)
-        }
         return flowOf(connection.connectionState(), connection.messages(this))
+            .onStart {
+                connection.connect()
+                stateMachine.fire(Trigger.SUBSCRIBE)
+            }
             .flattenMerge()
             .transform {
                 if (it is ConnectionState) connectionStateChanged(it)

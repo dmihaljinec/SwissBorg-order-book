@@ -154,7 +154,9 @@ class WebSocketClient @Inject constructor(
                 }
             }
 
-            override fun trigger(trigger: Trigger?) = Unit
+            override fun trigger(trigger: Trigger?) {
+                Timber.d("fire trigger: $trigger")
+            }
         })
 
         stateMachine.onUnhandledTrigger { state, trigger -> Timber.d("Unhandled trigger $trigger in state $state") }
