@@ -7,14 +7,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.swissborg.orderbook.android.R
 import com.swissborg.orderbook.android.databinding.FragmentOrderBookListBinding
 import com.swissborg.orderbook.repository.OrderBookRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.order_book_list.view.*
+import kotlinx.coroutines.FlowPreview
 
 @AndroidEntryPoint
+@FlowPreview
 class OrderBookListFragment : Fragment() {
     private val adapter = OrderBookListAdapter()
     private val orderBookListFragmentViewModel: OrderBookListFragmentViewModel by viewModels()

@@ -1,11 +1,10 @@
 package com.swissborg.orderbook.android.bitfinex
 
 import com.google.gson.*
-import com.google.gson.annotations.Expose
 import java.lang.reflect.Type
 
 data class ChannelMessage(
-    @Expose val channelId: Int,
+    val channelId: Int,
 )
 
 class ChannelMessageDeserializer : JsonDeserializer<ChannelMessage> {

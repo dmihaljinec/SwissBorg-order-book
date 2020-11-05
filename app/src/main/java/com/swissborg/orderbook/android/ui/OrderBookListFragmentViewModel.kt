@@ -11,11 +11,14 @@ import com.swissborg.orderbook.android.ui.viewmodel.TickerViewModel
 import com.swissborg.orderbook.android.ui.viewmodel.toViewModel
 import com.swissborg.orderbook.interactor.OrderBookInteractors
 import com.swissborg.orderbook.repository.OrderBookRepository
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.launch
 
+@FlowPreview
 class OrderBookListFragmentViewModel @ViewModelInject constructor(
     private val interactors: OrderBookInteractors
 ) : ViewModel() {
@@ -41,6 +44,7 @@ class OrderBookListFragmentViewModel @ViewModelInject constructor(
             }
             val orderBookList = async {
                 interactors.getOrderBooks(OrderBookRepository.CurrencyPair.BTCUSD)
+                    .sample(SAMPLE_PERIOD)
                     .map { orderBookList -> orderBookList.map { orderBook -> orderBook.toViewModel() } }
                     .collect { orderBookList ->
                         _orderBookList.value = orderBookList
@@ -59,5 +63,9 @@ class OrderBookListFragmentViewModel @ViewModelInject constructor(
             orderBookList.await()
             connectionState.await()
         }
+    }
+
+    companion object {
+        private const val SAMPLE_PERIOD = 1000L // one second
     }
 }

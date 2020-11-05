@@ -4,7 +4,7 @@ wrapper.gradleVersion = '6.6.1'
 
 buildscript {
     ext.versions = [
-       androidGradlePlugin: "4.0.1",
+       androidGradlePlugin: '4.1.0',
        androidTest: "1.3.0",
        appcompat: "1.2.0", // 1.3.0-alpha02
        constraintLayout: "2.0.0",
