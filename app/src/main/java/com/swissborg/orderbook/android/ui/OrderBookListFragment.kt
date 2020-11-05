@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.swissborg.orderbook.android.R
 import com.swissborg.orderbook.android.databinding.FragmentOrderBookListBinding
